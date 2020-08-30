@@ -33,7 +33,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         add-apt-key \
         exiftool \
         rawtherapee \
-        ffmpeg
+        ffmpeg \
+        imagemagick
 
 # Copy dependencies
 COPY --from=build /usr/lib/libtensorflow.so /usr/lib/libtensorflow.so

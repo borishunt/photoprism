@@ -3,25 +3,20 @@ package thumb
 import (
 	"image"
 	"path/filepath"
+	"os/exec"
+	"strconv"
+	"fmt"
 
-	"github.com/disintegration/imaging"
 	"github.com/photoprism/photoprism/pkg/txt"
 )
 
-func Jpeg(srcFilename, jpgFilename string) (img image.Image, err error) {
-	img, err = imaging.Open(srcFilename, imaging.AutoOrientation(true))
-
-	if err != nil {
-		log.Errorf("resample: can't open %s", txt.Quote(filepath.Base(srcFilename)))
-		return img, err
-	}
-
-	saveOption := imaging.JPEGQuality(JpegQuality)
-
-	if err = imaging.Save(img, jpgFilename, saveOption); err != nil {
+func Jpeg(srcFilename, jpgFilename string, size int) (img image.Image, err error) {
+	resize := fmt.Sprintf("%dx%d>", size, size)
+	cmd := exec.Command("convert", srcFilename + "[0]", "-resize", resize, "-quality", strconv.Itoa(JpegQuality), jpgFilename)
+	if err = cmd.Run(); err != nil {
 		log.Errorf("resample: failed to save %s", txt.Quote(filepath.Base(jpgFilename)))
-		return img, err
+		return nil, err
 	}
 
-	return img, nil
+	return nil, nil
 }
